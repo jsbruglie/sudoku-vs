@@ -34,6 +34,8 @@ class SudokuBoard(object):
     def __init__ (self, dim):
         self.board =[]
         self.dim = dim
+        self.sqrt = int(sqrt(dim))
+
         for i in range (dim):
             self.board.append([])
             for j in range (dim):
@@ -44,11 +46,36 @@ class SudokuBoard(object):
 
     def checkRow (self, x, answer):
         for i in range (self.dim):
-            return checkCell(x,i, answer)
-             
+            if self.checkCell(x,i, answer):
+                return True
+        return False
 
-    def isMoveValid(self, x, y, answer):
-        pass
+    def checkColumn (self, y, answer):
+        for i in range (self.dim):
+            if self.checkCell(i, y, answer):
+                return True
+        return False
+
+    def checkSquare (self, x, y, answer):
+        square_x = int(x / self.sqrt)
+        square_y = int(y / self.sqrt)
+        for x in range (self.sqrt):
+            for y in range (self.sqrt):
+                if self.checkCell(square_x * self.sqrt + x, square_y * self.sqrt + y, answer):
+                    return True
+        return False
+
+    def moveIsValid(self, x, y, answer):
+        if 0 <= x < self.dim and y <= 0 < self.dim and 0 <= answer < self.dim:
+            if self.checkRow(x, answer) or self.checkColumn(y, answer) or self.checkSquare(x, y, answer):
+                return False
+            return True
+
+    def changeCell(self, x, y, answer):
+        if self.moveIsValid( x, y, answer):
+            self.board[x][y] = answer
+            return True
+        return False
 
     def printBoard (self):
         print(self.board)
@@ -69,14 +96,17 @@ def main():
         playerList.append(Player(name,2))
 
     b = SudokuBoard(dim)
-    b.printBoard()
 
     while True:
         for player in playerList:
             if player.isActive:
+                b.printBoard()
                 try:
                     x, y, answer = input('{}: What is your move? '.format(player.name))
-                    player.addMove(x,y,answer)
+                    if b.changeCell(int(x), int(y), int(answer)):
+                        player.addMove(int(x),int(y), int(answer))
+                    else:
+                        player.loseLife()
                 except ValueError :
                     print('Please input your move as follows: [x][y][number]')
 
