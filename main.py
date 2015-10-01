@@ -16,7 +16,7 @@ class Player:
         self.moves = []
 
     def addMove(self, x, y, answer):
-        self.moves.append(PlayerMove(x,y,answer))
+        self.moves.append(PlayerMove(x, y, answer))
 
     def loseLife(self):
         self.lives -= 1
@@ -66,14 +66,17 @@ class SudokuBoard(object):
         return False
 
     def moveIsValid(self, x, y, answer):
-        if 0 <= x < self.dim and y <= 0 < self.dim and 0 <= answer < self.dim:
+        if 0 <= x < self.dim and 0 <= y < self.dim and 0 < answer <= self.dim:
+            print('Valid Dimensions')
             if self.checkRow(x, answer) or self.checkColumn(y, answer) or self.checkSquare(x, y, answer):
+                print('...But invalid context.')
                 return False
             return True
 
     def changeCell(self, x, y, answer):
         if self.moveIsValid( x, y, answer):
             self.board[x][y] = answer
+            print(self.board[x][y])
             return True
         return False
 
@@ -87,7 +90,7 @@ def main():
     while players < 2:
         players = int(input ('How many players? '))
 
-    while dim < 4:
+    while dim not in [4,9,16,25]:
         dim = int(input('What is the dimension of the side? '))
 
     playerList = []
