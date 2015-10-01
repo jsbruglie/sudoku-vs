@@ -1,4 +1,4 @@
-import pprint
+from math import sqrt
 
 class Player:
 
@@ -12,16 +12,15 @@ class Player:
 class SudokuBoard(object):
 
     def __init__ (self, dim):
-        self.board =[[]]
+        self.board =[]
         self.dim = dim
         for i in range (0, dim):
-            self.board[-1].append([])
+            self.board.append([])
             for j in range (0, dim):
-                self.board[-1][-1].append(int(0))
+                self.board[-1].append(int(0))
 
     def printBoard (self):
-        pp = pprint.PrettyPrinter(indent=2)
-        pp.pprint(self.board)
+        print(self.board)
 
 def main():
 
