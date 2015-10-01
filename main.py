@@ -34,10 +34,18 @@ class SudokuBoard(object):
     def __init__ (self, dim):
         self.board =[]
         self.dim = dim
-        for i in range (0, dim):
+        for i in range (dim):
             self.board.append([])
-            for j in range (0, dim):
+            for j in range (dim):
                 self.board[-1].append(int(0))
+
+    def checkCell (self, x, y, answer):
+        return self.board[x][y] == answer
+
+    def checkRow (self, x, answer):
+        for i in range (self.dim):
+            return checkCell(x,i, answer)
+             
 
     def isMoveValid(self, x, y, answer):
         pass
