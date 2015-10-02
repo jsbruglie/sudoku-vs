@@ -9,19 +9,16 @@ class PlayerMove:
 
 class Player:
 
-    def __init__ (self, name, lives):
+    def __init__ (self, name):
         self.name = name
-        self.lives = lives
         self.active = True
         self.moves = []
 
     def addMove(self, x, y, answer):
         self.moves.append(PlayerMove(x, y, answer))
 
-    def loseLife(self):
-        self.lives -= 1
-        if self.lives == 0 :
-            self.active = False
+    def lose(self):
+        self.active = False
 
     def isActive(self):
         return self.active
@@ -68,20 +65,22 @@ class SudokuBoard(object):
     def moveIsValid(self, x, y, answer):
         if 0 <= x < self.dim and 0 <= y < self.dim and 0 < answer <= self.dim:
             print('Valid Dimensions')
-            if self.checkRow(x, answer) or self.checkColumn(y, answer) or self.checkSquare(x, y, answer):
-                print('...But invalid context.')
-                return False
-            return True
+            # If the cell has not been filled yet
+            if self.board[x][y] == 0:
+                if self.checkRow(x, answer) or self.checkColumn(y, answer) or self.checkSquare(x, y, answer):
+                    print('...But invalid context.')
+                    return False
+                return True
 
     def changeCell(self, x, y, answer):
         if self.moveIsValid( x, y, answer):
             self.board[x][y] = answer
-            print(self.board[x][y])
             return True
         return False
 
     def printBoard (self):
-        print(self.board)
+        for row in self.board:
+            print(row)
 
 def main():
 
@@ -96,7 +95,7 @@ def main():
     playerList = []
     for i in range (1, players + 1):
         name = input('Player {}: What is your name? '.format(i))
-        playerList.append(Player(name,2))
+        playerList.append(Player(name))
 
     b = SudokuBoard(dim)
 
@@ -105,13 +104,13 @@ def main():
             if player.isActive:
                 b.printBoard()
                 try:
-                    x, y, answer = input('{}: What is your move? '.format(player.name))
+                    x, y, answer = input('{}: What is your move? '.format(player.name)).split(' ')
                     if b.changeCell(int(x), int(y), int(answer)):
                         player.addMove(int(x),int(y), int(answer))
                     else:
-                        player.loseLife()
+                        player.lose()
                 except ValueError :
-                    print('Please input your move as follows: [x][y][number]')
+                    print('Please input your move as follows: [x] [y] [number]')
 
 if __name__ == "__main__":
     main()
