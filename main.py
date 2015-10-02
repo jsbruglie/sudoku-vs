@@ -1,5 +1,7 @@
 from math import sqrt
 
+EMPTY = 0
+
 class PlayerMove:
 
     def __init__ (self, x, y, answer):
@@ -19,7 +21,7 @@ class Player:
 
     def lose(self):
         self.active = False
-        print('Player',self.name,'lost')
+        print('Player',self.name,'lost!')
 
     def isActive(self):
         return self.active
@@ -37,7 +39,7 @@ class SudokuBoard(object):
         for i in range (dim):
             self.board.append([])
             for j in range (dim):
-                self.board[-1].append(int(0))
+                self.board[-1].append(int(EMPTY))
 
     def checkCell (self, x, y, answer):
         return self.board[x][y] == answer
@@ -67,7 +69,7 @@ class SudokuBoard(object):
         if 0 <= x < self.dim and 0 <= y < self.dim and 0 < answer <= self.dim:
             print('Valid Dimensions')
             # If the cell has not been filled yet
-            if self.board[x][y] == 0:
+            if self.board[x][y] == EMPTY:
                 if self.checkRow(x, answer) or self.checkColumn(y, answer) or self.checkSquare(x, y, answer):
                     print('...But invalid context.')
                     return False
@@ -100,10 +102,10 @@ def main():
 
     b = SudokuBoard(dim)
 
-    # While there are active players - not working yet
     while True:
         for player in playerList:
-            if player.isActive:
+
+            if player.isActive():
                 b.printBoard()
                 try:
                     x, y, answer = input('{}: What is your move? '.format(player.name)).split(' ')
@@ -112,7 +114,7 @@ def main():
                     else:
                         player.lose()
                 except ValueError :
-                    print('Please input your move as follows: [x] [y] [number]')
+                    print('Please input your move as follows:[x] [y] [number] (0 indexed coordinates)')
 
 if __name__ == "__main__":
     main()
