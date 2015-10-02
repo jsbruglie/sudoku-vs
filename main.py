@@ -19,12 +19,13 @@ class Player:
 
     def lose(self):
         self.active = False
+        print('Player',self.name,'lost')
 
     def isActive(self):
         return self.active
 
     def printPlayer(self):
-        print('Name: ', name, ' Lives: ', lives)
+        print('Name: ', self.name, ' Lives: ', self.lives)
 
 class SudokuBoard(object):
 
@@ -99,6 +100,7 @@ def main():
 
     b = SudokuBoard(dim)
 
+    # While there are active players - not working yet
     while True:
         for player in playerList:
             if player.isActive:
