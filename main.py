@@ -1,6 +1,12 @@
+import sys
 from math import sqrt
+from tkinter import Tk
 
-EMPTY = 0
+from gui import *
+
+MARGIN = 20  # Pixels around the board
+SIDE = 35  # Width of every board cell.
+EMPTY = 0 # The numerical code for an empty square
 
 class PlayerMove:
 
@@ -85,31 +91,51 @@ class SudokuBoard(object):
         for row in self.board:
             print(row)
 
-def main():
-
-    players = 0
+def getPuzzleDimension():
     dim = 0
-    while players < 2:
-        players = int(input ('How many players? '))
-
     while dim not in [4,9,16,25]:
-        dim = int(input('What is the dimension of the side? '))
+        try:
+            dim = int(input('What is the dimension of the side? '))
+        except ValueError :
+            print('Please input a valid integer!')
+    return dim
+
+def getPlayerList():
+    players = 0
+    while players < 2:
+        try:
+            players = int(input ('How many players? '))
+        except ValueError :
+            print('Please input a valid integer!')
 
     playerList = []
     for i in range (1, players + 1):
         name = input('Player {}: What is your name? '.format(i))
         playerList.append(Player(name))
+    return players, playerList
 
-    b = SudokuBoard(dim)
+def main():
+
+    dim = getPuzzleDimension()
+    players, playerList = getPlayerList()
+
+    board = SudokuBoard(dim)
+
+    width = height = MARGIN * 2 + SIDE * dim
+
+    root = Tk()
+    root.geometry("%dx%d" % (width, height))
+    app = SudokuUI(root, board)
 
     while True:
         for player in playerList:
 
             if player.isActive():
-                b.printBoard()
+                board.printBoard()
+                root.update()
                 try:
                     x, y, answer = input('{}: What is your move? '.format(player.name)).split(' ')
-                    if b.changeCell(int(x), int(y), int(answer)):
+                    if board.changeCell(int(x), int(y), int(answer)):
                         player.addMove(int(x),int(y), int(answer))
                     else:
                         player.lose()

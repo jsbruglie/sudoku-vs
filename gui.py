@@ -7,47 +7,35 @@ SIDE = 35  # Width of every board cell.
 
 class SudokuUI(Frame):
 
-    def __init__(self, parent, dimensions):
+    def __init__(self, parent, game):
+
         Frame.__init__(self, parent, background = "black")
         self.parent = parent
-        self.initUI(dimensions)
+        self.game = game
+        self.width = self.heigth = MARGIN * 2 + SIDE * game.dim
+        self.initUI()
 
-    def initUI(self, dimensions):
+    def initUI(self):
 
         self.parent.title("SudokuVS")
         self.pack(fill = BOTH, expand = 1)
         self.canvas = Canvas(
-            self, width = dimensions['width'], height = dimensions['height'],
+            self, width = self.width, height = self.heigth,
             highlightthickness = 0
         )
         self.canvas.pack(fill = BOTH, side = TOP)
-        self.draw_grid(dimensions)
+        self.draw_grid()
 
-    def draw_grid(self, dimensions):
-        for i in range(dimensions['side'] + 1):
+    def draw_grid(self):
+        for i in range(self.game.dim + 1):
             self.canvas.create_line(
                 MARGIN + i * SIDE, MARGIN,
-                MARGIN + i * SIDE, dimensions['height'] - MARGIN,
-                fill="black" if i % dimensions['sqrt'] == 0 else "gray"
+                MARGIN + i * SIDE, self.heigth - MARGIN,
+                fill = "black" if i % self.game.sqrt == 0 else "gray"
             )
 
             self.canvas.create_line(
                 MARGIN, MARGIN + i * SIDE,
-                dimensions['width']- MARGIN, MARGIN + i * SIDE,
-                fill="black" if i % dimensions['sqrt'] == 0 else "gray"
+                self.width - MARGIN, MARGIN + i * SIDE,
+                fill = "black" if i % self.game.sqrt == 0 else "gray"
             )
-
-def main():
-
-    dim = 9
-    width = height = MARGIN * 2 + SIDE * dim
-
-    dimensions = {'width': width, 'height': height, 'side': dim, 'sqrt': int(sqrt(dim))}
-
-    root = Tk()
-    root.geometry("%dx%d" % (width, height))
-    app = SudokuUI(root, dimensions)
-    root.mainloop()
-
-if __name__ == '__main__':
-    main()
