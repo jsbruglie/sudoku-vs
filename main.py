@@ -139,7 +139,6 @@ def main():
         for player in playerList:
 
             if player.isActive():
-                board.printBoard()
                 app.drawNumbers()
                 try:
                     x, y, answer = input('{}: What is your move? '.format(player.name)).split(' ')
