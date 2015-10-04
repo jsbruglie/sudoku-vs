@@ -15,12 +15,19 @@ class PlayerMove:
         self.y = y
         self.answer = answer
 
+    def printMove(self):
+        print('Placed {} in ({},{})'.format(self.answer, self.x, self.y))
+
 class Player:
 
     def __init__ (self, name):
         self.name = name
         self.active = True
         self.moves = []
+
+    def printMoves(self):
+        for move in self.moves:
+            move.printMove()
 
     def addMove(self, x, y, answer):
         self.moves.append(PlayerMove(x, y, answer))
@@ -34,6 +41,7 @@ class Player:
 
     def printPlayer(self):
         print('Name: ', self.name, ' Lives: ', self.lives)
+        self.printMoves()
 
 class SudokuBoard(object):
 
@@ -132,7 +140,7 @@ def main():
 
             if player.isActive():
                 board.printBoard()
-                root.update()
+                app.drawNumbers()
                 try:
                     x, y, answer = input('{}: What is your move? '.format(player.name)).split(' ')
                     if board.changeCell(int(x), int(y), int(answer)):
