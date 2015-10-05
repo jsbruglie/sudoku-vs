@@ -8,6 +8,30 @@ MARGIN = 20  # Pixels around the board
 SIDE = 35  # Width of every board cell.
 EMPTY = 0 # The numerical code for an empty square
 
+#Input related functions - should not be in final version
+def getPuzzleDimension():
+    dim = 0
+    while dim not in [4,9,16,25]:
+        try:
+            dim = int(input('What is the dimension of the side? '))
+        except ValueError :
+            print('Please input a valid integer!')
+    return dim
+
+def getPlayerList():
+    players = 0
+    while players < 2:
+        try:
+            players = int(input ('How many players? '))
+        except ValueError :
+            print('Please input a valid integer!')
+
+    playerList = []
+    for i in range (1, players + 1):
+        name = input('Player {}: What is your name? '.format(i))
+        playerList.append(Player(name))
+    return players, playerList
+
 class PlayerMove:
 
     def __init__ (self, x, y, answer):
@@ -18,7 +42,7 @@ class PlayerMove:
     def printMove(self):
         print('Placed {} in ({},{})'.format(self.answer, self.x, self.y))
 
-class Player:
+class Player(object):
 
     def __init__ (self, name):
         self.name = name
@@ -43,9 +67,16 @@ class Player:
         print('Name: ', self.name, ' Lives: ', self.lives)
         self.printMoves()
 
-class SudokuBoard(object):
+class Game(object):
 
-    def __init__ (self, dim):
+    def __init__ (self):
+
+        dim = getPuzzleDimension()
+        players, playerList = getPlayerList()
+
+        self.players = self.active = players
+        self.playerList = playerList
+
         self.board =[]
         self.dim = dim
         self.sqrt = int(sqrt(dim))
@@ -54,6 +85,13 @@ class SudokuBoard(object):
             self.board.append([])
             for j in range (dim):
                 self.board[-1].append(int(EMPTY))
+
+    def activePlayers(self):
+        return self.active
+
+    def eliminatePlayer(self, player):
+        player.lose()
+        self.active -= 1
 
     def checkCell (self, x, y, answer):
         return self.board[x][y] == answer
@@ -99,55 +137,31 @@ class SudokuBoard(object):
         for row in self.board:
             print(row)
 
-def getPuzzleDimension():
-    dim = 0
-    while dim not in [4,9,16,25]:
-        try:
-            dim = int(input('What is the dimension of the side? '))
-        except ValueError :
-            print('Please input a valid integer!')
-    return dim
-
-def getPlayerList():
-    players = 0
-    while players < 2:
-        try:
-            players = int(input ('How many players? '))
-        except ValueError :
-            print('Please input a valid integer!')
-
-    playerList = []
-    for i in range (1, players + 1):
-        name = input('Player {}: What is your name? '.format(i))
-        playerList.append(Player(name))
-    return players, playerList
-
 def main():
 
-    dim = getPuzzleDimension()
-    players, playerList = getPlayerList()
+    game = Game()
 
-    board = SudokuBoard(dim)
-
-    width = height = MARGIN * 2 + SIDE * dim
+    width = height = MARGIN * 2 + SIDE * game.dim
 
     root = Tk()
     root.geometry("%dx%d" % (width, height))
-    app = SudokuUI(root, board)
+    app = SudokuUI(root, game)
 
-    while True:
-        for player in playerList:
+    while game.activePlayers() >= 1:
+        for player in game.playerList:
 
             if player.isActive():
                 app.drawNumbers()
                 try:
                     x, y, answer = input('{}: What is your move? '.format(player.name)).split(' ')
-                    if board.changeCell(int(x), int(y), int(answer)):
+                    if game.changeCell(int(x), int(y), int(answer)):
                         player.addMove(int(x),int(y), int(answer))
                     else:
-                        player.lose()
+                        game.eliminatePlayer(player)
                 except ValueError :
                     print('Please input your move as follows:[x] [y] [number] (0 indexed coordinates)')
+
+    quit()                
 
 if __name__ == "__main__":
     main()
