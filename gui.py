@@ -55,32 +55,31 @@ class SudokuUI(Frame):
                         text = answer, tags = "numbers",
                     )
 
-    def main():
+def main():
 
-        game = Game()
+    game = Game()
 
-        width = height = MARGIN * 2 + SIDE * game.dim
+    width = height = MARGIN * 2 + SIDE * game.dim
 
-        root = Tk()
-        root.geometry("%dx%d" % (width, height))
-        app = SudokuUI(root, game)
+    root = Tk()
+    root.geometry("%dx%d" % (width, height))
+    app = SudokuUI(root, game)
 
-        while game.activePlayers() >= 1:
-            for player in game.playerList:
+    while game.activePlayers() >= 1:
+        for player in game.playerList:
 
-                if player.isActive():
-                    app.drawNumbers()
-                    try:
-                        x, y, answer = input('{}: What is your move? '.format(player.name)).split(' ')
-                        if game.changeCell(int(x), int(y), int(answer)):
-                            player.addMove(int(x),int(y), int(answer))
-                        else:
-                            game.eliminatePlayer(player)
-                    except ValueError :
-                        print('Please input your move as follows:[x] [y] [number] (0 indexed coordinates)')
+            if player.isActive():
+                app.drawNumbers()
+                try:
+                    x, y, answer = input('{}: What is your move? '.format(player.name)).split(' ')
+                    if game.changeCell(int(x), int(y), int(answer)):
+                        player.addMove(int(x),int(y), int(answer))
+                    else:
+                        game.eliminatePlayer(player)
+                except ValueError :
+                    print('Please input your move as follows:[x] [y] [number] (0 indexed coordinates)')
 
-        quit()
+    quit()
 
-    if __name__ == "__main__":
-        main()
-                
+if __name__ == "__main__":
+    main()
