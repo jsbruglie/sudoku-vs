@@ -1,11 +1,7 @@
-import sys
 from math import sqrt
-from tkinter import Tk
 
 from gui import *
 
-MARGIN = 20  # Pixels around the board
-SIDE = 35  # Width of every board cell.
 EMPTY = 0 # The numerical code for an empty square
 
 #Input related functions - should not be in final version
@@ -161,7 +157,7 @@ def main():
                 except ValueError :
                     print('Please input your move as follows:[x] [y] [number] (0 indexed coordinates)')
 
-    quit()                
+    quit()
 
 if __name__ == "__main__":
     main()

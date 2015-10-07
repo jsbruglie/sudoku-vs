@@ -2,6 +2,8 @@ import sys
 from math import sqrt
 from tkinter import Tk, Canvas, Frame, Button, BOTH, TOP, BOTTOM
 
+from game import *
+
 MARGIN = 20  # Pixels around the board
 SIDE = 35  # Width of every board cell.
 EMPTY = 0 # The numerical code for an empty square
@@ -52,3 +54,33 @@ class SudokuUI(Frame):
                         MARGIN + row * SIDE + SIDE / 2,
                         text = answer, tags = "numbers",
                     )
+
+    def main():
+
+        game = Game()
+
+        width = height = MARGIN * 2 + SIDE * game.dim
+
+        root = Tk()
+        root.geometry("%dx%d" % (width, height))
+        app = SudokuUI(root, game)
+
+        while game.activePlayers() >= 1:
+            for player in game.playerList:
+
+                if player.isActive():
+                    app.drawNumbers()
+                    try:
+                        x, y, answer = input('{}: What is your move? '.format(player.name)).split(' ')
+                        if game.changeCell(int(x), int(y), int(answer)):
+                            player.addMove(int(x),int(y), int(answer))
+                        else:
+                            game.eliminatePlayer(player)
+                    except ValueError :
+                        print('Please input your move as follows:[x] [y] [number] (0 indexed coordinates)')
+
+        quit()
+
+    if __name__ == "__main__":
+        main()
+                
